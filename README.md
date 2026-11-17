@@ -26,6 +26,15 @@
 - **刷新不丢局**：未结束的棋局会存到 `localStorage`，下次打开接着下。
 - **自适应**：棋盘使用中性表面跟随系统外观 —— 浅色模式近白、深色模式近黑，不再使用木色；宽屏双栏、窄屏堆叠、键盘可操作（方向键 + 回车）。
 
+## dsh-market
+
+本仓库已按 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的收录要求准备：
+
+- `package.json` 同时声明 `dsh.bundle` 与 `dsh.client`，仓库根目录带 `cordis.patch.yml`
+- 市场图标：`assets/icon-180.png`
+- 商店截图：`screenshots.json`
+- 待提交的条目文件：`market/KunChiang__dsh-moyu-games.yml`
+
 ## 安装
 
 ### 方式一：官方 CLI

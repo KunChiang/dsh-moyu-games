@@ -13,7 +13,10 @@
   "files": [
     "lib",
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "assets",
+    "screenshots.json"
   ],
   "keywords": [
     "dsh",
@@ -61,5 +64,6 @@
   "homepage": "https://github.com/KunChiang/dsh-moyu-games",
   "bugs": {
     "url": "https://github.com/KunChiang/dsh-moyu-games/issues"
-  }
+  },
+  "icon": "./assets/icon-180.png"
 }
