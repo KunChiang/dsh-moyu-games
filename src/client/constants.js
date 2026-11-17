@@ -1,0 +1,5 @@
+export const NS = 'moyu-games'
+export const PANEL_ID = 'moyu-games'
+export const GAME_GOMOKU = 'gomoku'
+export const GAME_DARK = 'dark-animals'
+export const LAST_GAME_KEY = 'dsh-moyu-games.last-game.v2'

@@ -1,0 +1,9 @@
+# dsh-moyu-games 组合包补丁：把「摸鱼棋室」插入 profile。
+#
+# 使用官方 CLI 安装时，dsh 会读取本文件并把下面这一行挂进 profile 的 Loader：
+#   dsh plugin --profile web add dsh-moyu-games
+#
+# 手动挂载时把同样的 insert 行复制到 profile 的 cordis.patch.yml 即可。
+- insert:
+    - id: moyu-games
+      name: 'dsh-moyu-games'
