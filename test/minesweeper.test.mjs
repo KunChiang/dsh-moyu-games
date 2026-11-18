@@ -132,6 +132,23 @@ test('分析器能找到确定安全格', () => {
   assert.ok(result.safe.length > 0 || result.mines.length > 0 || result.guess !== null)
 })
 
+test('分析器：数字已满足时其余邻格确定为安全', () => {
+  const game = newGame('easy')
+  const cells = game.cells.map((cell) => ({ ...cell }))
+  cells[0] = { ...cells[0], mine: true }
+  for (let i = 0; i < cells.length; i += 1) {
+    cells[i].adjacent = neighbors(9, 9, i).includes(0) ? 1 : 0
+  }
+  cells[0] = { ...cells[0], flagged: true }
+  cells[1] = { ...cells[1], revealed: true }
+  cells[1].adjacent = 1
+  const state = { ...game, cells, placed: true, status: 'playing', revealed: 1, flagCount: 1 }
+  const result = analyze(state)
+  for (const index of [2, 9, 10, 11]) {
+    assert.ok(result.safe.includes(index), `expected ${index} to be safe, got ${JSON.stringify(result)}`)
+  }
+})
+
 test('分析器在无确定解时给出猜测', () => {
   let game = newGame('easy')
   game = reveal(game, 40, () => 0.37)
