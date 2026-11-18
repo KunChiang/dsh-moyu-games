@@ -488,4 +488,87 @@ export const STYLES = `
 .myg-daChip.human { border-color: color-mix(in srgb, var(--myg-accent) 30%, var(--dsw-alias-border-l1)); }
 .myg-daChip.ai { border-color: color-mix(in srgb, var(--myg-da-red) 30%, var(--dsw-alias-border-l1)); }
 
+
+.myg-msScroll { width: 100%; overflow: auto; padding: 2px; display: flex; justify-content: center; }
+.myg-msBoard {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  max-width: calc(var(--cols) * var(--cell));
+  min-width: calc(var(--cols) * 14px);
+  padding: 7px;
+  border-radius: 12px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  background: var(--dsw-alias-bg-layer-2);
+}
+.myg-msCell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: var(--cell-font, 14px);
+  font-weight: 720;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color .1s ease, border-color .1s ease, transform .1s ease;
+}
+.myg-msCell.hidden {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-label-primary) 3%, var(--dsw-alias-bg-layer-2)), var(--dsw-alias-bg-layer-2));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent), inset 0 -1px 0 color-mix(in srgb, #000 8%, transparent);
+}
+.myg-msCell.hidden:hover {
+  border-color: color-mix(in srgb, var(--myg-accent) 46%, var(--dsw-alias-border-l2));
+  background: color-mix(in srgb, var(--myg-accent) 7%, var(--dsw-alias-bg-layer-2));
+}
+.myg-msCell.hidden:active { transform: scale(.96); }
+.myg-msCell.revealed {
+  cursor: default;
+  border-color: var(--dsw-alias-border-l1);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 2%, var(--dsw-alias-bg-layer-1));
+  box-shadow: none;
+}
+.myg-msCell.revealed:hover { border-color: var(--dsw-alias-border-l1); }
+.myg-msCell.flagged { color: var(--dsw-alias-state-error-primary, #dc2626); }
+.myg-msCell.mine { color: var(--dsw-alias-state-error-primary, #dc2626); background: color-mix(in srgb, var(--dsw-alias-state-error-primary, #dc2626) 9%, var(--dsw-alias-bg-layer-1)); }
+.myg-msGlyph { width: 64%; height: 64%; display: block; }
+.myg-msNumber { font-size: var(--cell-font, 14px); font-variant-numeric: tabular-nums; }
+.myg-msCell.n1 { color: #2563eb; }
+.myg-msCell.n2 { color: #15803d; }
+.myg-msCell.n3 { color: #dc2626; }
+.myg-msCell.n4 { color: #1e3a8a; }
+.myg-msCell.n5 { color: #9a3412; }
+.myg-msCell.n6 { color: #0f766e; }
+.myg-msCell.n7 { color: #111827; }
+.myg-msCell.n8 { color: #6b7280; }
+[data-ds-dark-theme] .myg-msCell.n1 { color: #60a5fa; }
+[data-ds-dark-theme] .myg-msCell.n2 { color: #4ade80; }
+[data-ds-dark-theme] .myg-msCell.n3 { color: #f87171; }
+[data-ds-dark-theme] .myg-msCell.n4 { color: #93c5fd; }
+[data-ds-dark-theme] .myg-msCell.n5 { color: #fb923c; }
+[data-ds-dark-theme] .myg-msCell.n6 { color: #2dd4bf; }
+[data-ds-dark-theme] .myg-msCell.n7 { color: #e5e7eb; }
+[data-ds-dark-theme] .myg-msCell.n8 { color: #9ca3af; }
+.myg-msCell.flag-mode.hidden { cursor: cell; }
+.myg-msCell.hint-safe { outline: 2px solid color-mix(in srgb, var(--dsw-alias-state-success-primary, #22c55e) 78%, transparent); outline-offset: -2px; z-index: 2; }
+.myg-msCell.hint-mine { outline: 2px solid color-mix(in srgb, var(--dsw-alias-state-error-primary, #dc2626) 78%, transparent); outline-offset: -2px; z-index: 2; }
+.myg-msCell.hint-guess { outline: 2px dashed color-mix(in srgb, var(--myg-da-red, #d97706) 88%, transparent); outline-offset: -2px; z-index: 2; }
+.myg-msCell.hint-safe::after, .myg-msCell.hint-guess::after {
+  content: "";
+  position: absolute; inset: 22%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.myg-msCell.hint-safe::after { background: color-mix(in srgb, var(--dsw-alias-state-success-primary, #22c55e) 18%, transparent); }
+.myg-msCell.hint-guess::after { background: color-mix(in srgb, var(--myg-da-red, #d97706) 16%, transparent); }
+
 `

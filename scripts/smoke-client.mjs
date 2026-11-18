@@ -89,5 +89,9 @@ const darkHtml = renderToStaticMarkup(React.createElement(gomoku.component, { in
 for (const marker of ['myg-root', 'myg-daGrid', '暗兽棋', '玩法', '首翻']) {
   if (!darkHtml.includes(marker)) throw new Error(`rendered dark panel is missing ${marker}`)
 }
-console.log(`rendered panels: gomoku ${gomokuHtml.length} B, dark ${darkHtml.length} B, markers ok`)
+const minesweeperHtml = renderToStaticMarkup(React.createElement(gomoku.component, { initialGame: 'minesweeper' }))
+for (const marker of ['myg-msBoard', '扫雷', '点第一格开始', 'AI 提示']) {
+  if (!minesweeperHtml.includes(marker)) throw new Error(`rendered minesweeper panel is missing ${marker}`)
+}
+console.log(`rendered panels: gomoku ${gomokuHtml.length} B, dark ${darkHtml.length} B, minesweeper ${minesweeperHtml.length} B, markers ok`)
 console.log('smoke ok')

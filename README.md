@@ -1,6 +1,6 @@
 # dsh-moyu-games · 摸鱼棋室
 
-> 一个给 DeepSeek Harness 用的「摸鱼」插件：侧栏点开，和本地 AI 下五子棋或暗兽棋。
+> 一个给 DeepSeek Harness 用的「摸鱼」插件：侧栏点开，和本地 AI 下五子棋、暗兽棋，或来一局扫雷。
 > 老板来了按 **Esc**，立刻回到对话。
 
 ![摸鱼棋室 · 浅色](preview/light.png)
@@ -11,17 +11,23 @@
 
 ![暗兽棋 · 深色](preview/dark-animals-dark.png)
 
+![扫雷 · 浅色](preview/minesweeper-light.png)
+
+![扫雷 · 深色](preview/minesweeper-dark.png)
+
 ## 功能
 
 - **五子棋**：15×15，无禁手，五连及以上即胜。
 - **暗兽棋**：4×4 翻翻棋，16 枚棋子全部背面朝上；首翻定阵营，每回合翻一枚暗棋或走一格；
   等级 1 象 → 8 鼠，高级吃低级、同级互吃，鼠可吃象、象不能吃鼠。
+- **扫雷**：9×9/10、16×16/40、16×30/99 三档，首点及周围安全，支持右键插旗、双击数字快速翻开；
+  每局 3 次本地 AI 提示，先给 100% 安全/必雷格，找不到才给概率最低的猜测。
 - **本地 AI 对手「鱼小七」**：三档难度（摸鱼 / 认真 / 卷王），候选点棋形评分 + alpha-beta
   搜索；不调用大模型、不消耗 token、断网也能下。
 - **老板键**：面板内按 `Esc` 或点「回到对话」立即切回聊天；输入框左侧还有一个「摸鱼棋室」小入口，随时开一局。
 - **完整对局体验**：悔棋（自动带走 AI 应手）、重开、换手、落子预览、最后一手标记、胜利连线、
   棋谱、思考中状态、AI 吐槽。暗兽棋还包括翻棋预览、合法落点提示、吃子记录与规则速查。
-- **分棋种战绩**：五子棋与暗兽棋各自记录胜负/和棋/连胜/最佳连胜，写入 Host 侧
+- **分棋种战绩**：五子棋、暗兽棋、扫雷各自记录胜负/和棋/连胜/最佳连胜，写入 Host 侧
   `$DSH_HOME/storages/moyu-games/stats.json`；Host 不可用时自动退回 `localStorage`。
 - **刷新不丢局**：未结束的棋局会存到 `localStorage`，下次打开接着下。
 - **自适应**：棋盘使用中性表面跟随系统外观 —— 浅色模式近白、深色模式近黑，不再使用木色；宽屏双栏、窄屏堆叠、键盘可操作（方向键 + 回车）。
@@ -60,9 +66,10 @@ dsh plugin --profile web add /absolute/path/to/dsh-moyu-games
 
 ## 使用
 
-- 侧栏只有一个「摸鱼棋室」入口；打开后用顶部标签页在五子棋 / 暗兽棋之间切换。
+- 侧栏只有一个「摸鱼棋室」入口；打开后用顶部标签页在五子棋 / 暗兽棋 / 扫雷之间切换。
 - 五子棋：点棋盘交叉点落子；棋盘获得焦点后可用方向键移动光标、回车落子。
 - 暗兽棋：点暗棋翻开；点己方明棋选中，再点高亮的相邻格移动或吃子。
+- 扫雷：左键翻开，右键插旗；触屏可先开「插旗模式」。`H` 用 AI 提示，`N` 重开，`F` 切换插旗模式。
 - `U` 悔棋，`N` 重开，`Esc` 回对话。
 - 难度与执子都在右侧「对局设置」里；换手会重开一局。
 - 战绩卡片右下角「清零」只清战绩，不影响棋局。
@@ -87,8 +94,10 @@ src/client/index.jsx        Client 半入口：注册主面板 / 侧栏入口 / 
 src/client/Panel.jsx        共享外壳：品牌头、标签页、摸鱼计时、老板键
 src/client/GomokuGame.jsx   五子棋对局 UI
 src/client/DarkAnimalGame.jsx 暗兽棋对局 UI
+src/client/MinesweeperGame.jsx 扫雷对局 UI
 src/client/Board.jsx        SVG 五子棋棋盘
 src/client/DarkAnimalsBoard.jsx 4×4 暗兽棋棋盘
+src/client/MinesweeperBoard.jsx 扫雷棋盘
 src/client/i18n.js          中英文案
 src/client/styles.js        全部样式（注入 style[data-plugin]）
 ```
@@ -102,7 +111,7 @@ src/client/styles.js        全部样式（注入 style[data-plugin]）
 Host 半只注册一个同源 JSON 路由：
 
 ```
-GET  /moyu-games/api/stats?game=gomoku|dark-animals   -> { game, stats }
+GET  /moyu-games/api/stats?game=gomoku|dark-animals|minesweeper   -> { game, stats }
 POST /moyu-games/api/stats          { game, result: "win" | "lose" | "draw" } -> { game, stats }
 POST /moyu-games/api/stats          { game, reset: true } -> { game, stats }
 ```
@@ -123,6 +132,7 @@ POST /moyu-games/api/stats          { game, reset: true } -> { game, stats }
 
 - AI 在主线程计算，五子棋卷王难度单步上限约 320 ms；对休闲对局够快，但极端长考时会有短暂卡顿。
 - 暗兽棋首版采用基础 4×4 规则，不含豹/狗/鼠的特殊移动扩展；AI 只根据已翻开的棋子与暗格位置决策，不会偷看暗棋身份。
+- 扫雷是单人玩法；每局 3 次 AI 提示，提示只做逻辑约束分析，不直接替玩家翻格。
 - 无禁手规则；不包含 Renju 黑棋禁手判定。
 - 战绩按 Host 文件串行写入；多标签页同时结算存在极小概率后写覆盖先写。
 

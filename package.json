@@ -1,7 +1,7 @@
 {
   "name": "dsh-moyu-games",
-  "version": "0.2.2",
-  "description": "摸鱼棋室：在 DSH 里边工作边和本地 AI 下五子棋与暗兽棋。侧栏入口、老板键、三档难度、分棋种战绩。",
+  "version": "0.3.0",
+  "description": "摸鱼棋室：在 DSH 里边工作边和本地 AI 下五子棋、暗兽棋，或来一局扫雷。侧栏入口、老板键、分棋种战绩。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {

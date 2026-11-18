@@ -137,6 +137,10 @@ test('host：不同棋种分别记账', async () => {
     res = await call(route(), 'GET', '/moyu-games/api/stats?game=dark-animals')
     assert.equal(JSON.parse(res.body).stats.wins, 0)
     assert.equal(JSON.parse(res.body).stats.losses, 1)
+    res = await call(route(), 'POST', '/moyu-games/api/stats', JSON.stringify({ game: 'minesweeper', result: 'win' }))
+    assert.equal(JSON.parse(res.body).stats.wins, 1)
+    res = await call(route(), 'GET', '/moyu-games/api/stats?game=minesweeper')
+    assert.equal(JSON.parse(res.body).stats.wins, 1)
     res = await call(route(), 'GET', '/moyu-games/api/stats?game=nope')
     assert.equal(res.status, 400)
   } finally {

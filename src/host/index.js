@@ -16,7 +16,7 @@ export const inject = ['webServer']
 
 const ROUTE_PREFIX = '/moyu-games/api'
 const MAX_BODY_BYTES = 8 * 1024
-const GAME_KEYS = new Set(['gomoku', 'dark-animals'])
+const GAME_KEYS = new Set(['gomoku', 'dark-animals', 'minesweeper'])
 const EMPTY_STATS = Object.freeze({ wins: 0, losses: 0, draws: 0, streak: 0, bestStreak: 0 })
 
 function dshHome() {

@@ -4,10 +4,12 @@ const STATS_KEY = 'dsh-moyu-games.stats.v1'
 const STATS_KEY_PREFIX = 'dsh-moyu-games.stats.v2.'
 const GAME_KEY = 'dsh-moyu-games.game.v1'
 const DARK_GAME_KEY = 'dsh-moyu-games.dark-animals.game.v1'
+const MINESWEEPER_GAME_KEY = 'dsh-moyu-games.minesweeper.game.v1'
 const API = 'moyu-games/api/stats'
 
 export const GAME_GOMOKU = 'gomoku'
 export const GAME_DARK_ANIMALS = 'dark-animals'
+export const GAME_MINESWEEPER = 'minesweeper'
 
 export const EMPTY_STATS = Object.freeze({
   wins: 0,
@@ -165,4 +167,20 @@ export function loadDarkGame() {
 
 export function clearDarkGame() {
   removeLocal(DARK_GAME_KEY)
+}
+
+/** 保存未结束的扫雷局。 */
+export function saveMinesweeper(saved) {
+  if (!saved || !Array.isArray(saved.cells)) return
+  writeLocal(MINESWEEPER_GAME_KEY, saved)
+}
+
+export function loadMinesweeper() {
+  const saved = readLocal(MINESWEEPER_GAME_KEY)
+  if (saved === null || typeof saved !== 'object' || !Array.isArray(saved.cells)) return null
+  return saved
+}
+
+export function clearMinesweeper() {
+  removeLocal(MINESWEEPER_GAME_KEY)
 }
