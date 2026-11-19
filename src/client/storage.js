@@ -5,11 +5,14 @@ const STATS_KEY_PREFIX = 'dsh-moyu-games.stats.v2.'
 const GAME_KEY = 'dsh-moyu-games.game.v1'
 const DARK_GAME_KEY = 'dsh-moyu-games.dark-animals.game.v1'
 const MINESWEEPER_GAME_KEY = 'dsh-moyu-games.minesweeper.game.v1'
+const STACK_GAME_KEY = 'dsh-moyu-games.stack.game.v1'
+const STACK_BEST_KEY = 'dsh-moyu-games.stack.best.v1'
 const API = 'moyu-games/api/stats'
 
 export const GAME_GOMOKU = 'gomoku'
 export const GAME_DARK_ANIMALS = 'dark-animals'
 export const GAME_MINESWEEPER = 'minesweeper'
+export const GAME_STACK = 'stack'
 
 export const EMPTY_STATS = Object.freeze({
   wins: 0,
@@ -183,4 +186,30 @@ export function loadMinesweeper() {
 
 export function clearMinesweeper() {
   removeLocal(MINESWEEPER_GAME_KEY)
+}
+
+/** 叠楼：当前楼与最高分。 */
+export function saveStack(tower) {
+  if (!tower || !Array.isArray(tower.blocks)) return
+  writeLocal(STACK_GAME_KEY, tower)
+}
+
+export function loadStack() {
+  const saved = readLocal(STACK_GAME_KEY)
+  if (saved === null || typeof saved !== 'object' || !Array.isArray(saved.blocks)) return null
+  return saved
+}
+
+export function clearStack() {
+  removeLocal(STACK_GAME_KEY)
+}
+
+export function stackBest() {
+  const saved = readLocal(STACK_BEST_KEY)
+  return Number.isFinite(saved) && saved >= 0 ? Math.floor(saved) : 0
+}
+
+export function setStackBest(score) {
+  if (!Number.isFinite(score) || score < 0) return
+  writeLocal(STACK_BEST_KEY, Math.floor(score))
 }

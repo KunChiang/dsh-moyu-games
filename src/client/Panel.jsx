@@ -1,10 +1,11 @@
 import React from 'react'
-import { GAME_DARK, GAME_GOMOKU, GAME_MINESWEEPER, LAST_GAME_KEY, NS, PANEL_ID } from './constants.js'
+import { GAME_DARK, GAME_GOMOKU, GAME_MINESWEEPER, GAME_STACK, LAST_GAME_KEY, NS, PANEL_ID } from './constants.js'
 import { FishMark, GomokuGame } from './GomokuGame.jsx'
 import { DarkAnimalGame, PawMark } from './DarkAnimalGame.jsx'
 import { MineMark, MinesweeperGame } from './MinesweeperGame.jsx'
+import { StackGame, StackMark } from './StackGame.jsx'
 
-export { NS, PANEL_ID, GAME_DARK, GAME_GOMOKU, GAME_MINESWEEPER }
+export { NS, PANEL_ID, GAME_DARK, GAME_GOMOKU, GAME_MINESWEEPER, GAME_STACK }
 
 function formatClock(totalSeconds) {
   const safe = Math.max(0, Math.floor(totalSeconds))
@@ -18,7 +19,8 @@ function formatClock(totalSeconds) {
 function readLastGame() {
   try {
     const value = window.localStorage.getItem(LAST_GAME_KEY)
-    return value === GAME_DARK || value === GAME_MINESWEEPER ? value : GAME_GOMOKU
+    if (value === GAME_DARK || value === GAME_MINESWEEPER || value === GAME_STACK) return value
+    return GAME_GOMOKU
   } catch {
     return GAME_GOMOKU
   }
@@ -49,7 +51,7 @@ export function MoyuPanel({ ctx, initialGame }) {
   React.useEffect(() => ctx.locale.subscribe(() => bumpLocale((value) => value + 1)), [ctx])
 
   const [game, setGame] = React.useState(() => (
-    initialGame === GAME_DARK || initialGame === GAME_GOMOKU || initialGame === GAME_MINESWEEPER
+    [GAME_DARK, GAME_GOMOKU, GAME_MINESWEEPER, GAME_STACK].includes(initialGame)
       ? initialGame
       : readLastGame()
   ))
@@ -95,21 +97,22 @@ export function MoyuPanel({ ctx, initialGame }) {
 
   const isDark = game === GAME_DARK
   const isMines = game === GAME_MINESWEEPER
+  const isStack = game === GAME_STACK
   return (
     <div className="myg-root">
       <header className="myg-header">
         <div className="myg-brand">
-          <div className="myg-brandMark">{isDark ? <PawMark size={21} /> : isMines ? <MineMark size={21} /> : <FishMark size={21} />}</div>
+          <div className="myg-brandMark">{isDark ? <PawMark size={21} /> : isMines ? <MineMark size={21} /> : isStack ? <StackMark size={21} /> : <FishMark size={21} />}</div>
           <div className="myg-brandCopy">
             <h1 className="myg-title">{t('title')}<small>{t('titleTag')}</small></h1>
-            <p className="myg-sub">{isDark ? t('da.subtitle') : isMines ? t('ms.subtitle') : t('subtitle')}</p>
+            <p className="myg-sub">{isDark ? t('da.subtitle') : isMines ? t('ms.subtitle') : isStack ? t('stack.subtitle') : t('subtitle')}</p>
           </div>
         </div>
         <div className="myg-tabs" role="tablist">
           <button
             type="button"
             role="tab"
-            aria-selected={!isDark && !isMines}
+            aria-selected={!isDark && !isMines && !isStack}
             className="myg-tab"
             onClick={() => selectGame(GAME_GOMOKU)}
           >
@@ -133,6 +136,15 @@ export function MoyuPanel({ ctx, initialGame }) {
           >
             {t('tab.minesweeper')}
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={isStack}
+            className="myg-tab"
+            onClick={() => selectGame(GAME_STACK)}
+          >
+            {t('tab.stack')}
+          </button>
         </div>
         <span className="myg-headerSpacer" />
         <div className="myg-time">{t('slackTime')} <b>{formatClock(seconds)}</b></div>
@@ -145,7 +157,9 @@ export function MoyuPanel({ ctx, initialGame }) {
           ? <DarkAnimalGame ctx={ctx} t={t} active />
           : isMines
             ? <MinesweeperGame ctx={ctx} t={t} active />
-            : <GomokuGame ctx={ctx} t={t} active />}
+            : isStack
+              ? <StackGame t={t} active />
+              : <GomokuGame ctx={ctx} t={t} active />}
       </div>
     </div>
   )
