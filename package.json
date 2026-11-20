@@ -1,6 +1,6 @@
 {
   "name": "dsh-moyu-games",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "摸鱼棋室：在 DSH 里边工作边和本地 AI 下五子棋、暗兽棋，玩扫雷，或叠一座摇摇欲坠的楼。",
   "type": "module",
   "main": "lib/index.js",

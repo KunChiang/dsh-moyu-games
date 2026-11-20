@@ -152,16 +152,18 @@ export function StackGame({ t, active }) {
     if (phaseRef.current !== 'aiming') return
     const current = gameRef.current
     if (current.status !== 'playing') return
-    const result = resolveDrop(current, craneRef.current)
     const top = topBlock(current)
     const camera = cameraOffset(current.blocks.length)
+    const cameraX = top.x + top.width / 2 - STACK.width / 2
+    const worldCenter = craneRef.current + cameraX
+    const result = resolveDrop(current, worldCenter)
     const target = STACK.baseY - (current.blocks.length + 1) * BLOCK_HEIGHT + camera
     const pendingDrop = {
       result,
       from: CRANE_BLOCK_Y,
       to: target,
       width: top.width,
-      x: craneRef.current - top.width / 2,
+      x: worldCenter - top.width / 2,
       level: current.blocks.length,
     }
     pendingRef.current = pendingDrop
@@ -218,10 +220,12 @@ export function StackGame({ t, active }) {
       : 0
   )
   const camera = cameraOffset(game.blocks.length)
-  const baseCenter = STACK.width / 2
+  const topCenter = top.x + top.width / 2
+  const cameraX = topCenter - STACK.width / 2
+  const baseCenter = topBlock(game).x + topBlock(game).width / 2
   const vertical = phase === 'dropping' ? fallY : CRANE_BLOCK_Y
   const visibleBlock = phase === 'dropping' && pending !== null
-    ? { x: pending.x, width: pending.width, level: pending.level }
+    ? { x: pending.x - cameraX, width: pending.width, level: pending.level }
     : { x: crane.x - top.width / 2, width: top.width, level: game.blocks.length }
   const resultTitle = t('stack.result.title')
   const resultDesc = t('stack.result.desc', { n: game.score, best })
@@ -266,15 +270,19 @@ export function StackGame({ t, active }) {
                 <stop offset="0" className="myg-stackSkyTop" />
                 <stop offset="1" className="myg-stackSkyBottom" />
               </linearGradient>
+              <linearGradient id="myg-stackFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" className="myg-stackFadeStart" />
+                <stop offset="1" className="myg-stackFadeEnd" />
+              </linearGradient>
             </defs>
             <rect width={STACK.width} height={STACK.height} fill="url(#myg-stackSky)" />
             <circle cx="72" cy="130" r="26" className="myg-stackCloud" />
             <circle cx="300" cy="210" r="20" className="myg-stackCloud" />
             <circle cx="210" cy="88" r="14" className="myg-stackCloud" />
 
-            <g transform={`translate(0 ${camera})`}>
-              <rect x="0" y={STACK.baseY} width={STACK.width} height={STACK.height - STACK.baseY} className="myg-stackGround" />
-              <line x1="0" y1={STACK.baseY} x2={STACK.width} y2={STACK.baseY} className="myg-stackGroundLine" />
+            <g transform={`translate(${-cameraX} ${camera})`}>
+              <rect x="-2000" y={STACK.baseY} width="4360" height={STACK.height - STACK.baseY} className="myg-stackGround" />
+              <line x1="-2000" y1={STACK.baseY} x2="2360" y2={STACK.baseY} className="myg-stackGroundLine" />
               <g transform={`rotate(${angle} ${baseCenter} ${STACK.baseY})`}>
                 {game.blocks.map((block) => (
                   <rect
@@ -291,6 +299,10 @@ export function StackGame({ t, active }) {
                 ))}
               </g>
             </g>
+
+            {camera > 0 && (
+              <rect x="0" y={STACK.height - 110} width={STACK.width} height="110" fill="url(#myg-stackFade)" pointerEvents="none" />
+            )}
 
             <g className="myg-stackCrane">
               <line x1="20" y1={CRANE_RAIL_Y} x2={STACK.width - 20} y2={CRANE_RAIL_Y} className="myg-stackRail" />

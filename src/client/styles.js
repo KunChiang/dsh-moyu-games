@@ -588,7 +588,11 @@ export const STYLES = `
 [data-ds-dark-theme] .myg-stackSkyTop { stop-color: #1b2430; }
 [data-ds-dark-theme] .myg-stackSkyBottom { stop-color: #101720; }
 .myg-stackCloud { fill: #ffffff; opacity: .55; }
+.myg-stackFadeStart { stop-color: #d8e6f0; stop-opacity: 0; }
+.myg-stackFadeEnd { stop-color: #d8e6f0; stop-opacity: 1; }
 [data-ds-dark-theme] .myg-stackCloud { fill: #ffffff; opacity: .06; }
+[data-ds-dark-theme] .myg-stackFadeStart { stop-color: #101720; stop-opacity: 0; }
+[data-ds-dark-theme] .myg-stackFadeEnd { stop-color: #101720; stop-opacity: 1; }
 .myg-stackGround { fill: #b9c7d4; }
 [data-ds-dark-theme] .myg-stackGround { fill: #0c1219; }
 .myg-stackGroundLine { stroke: rgba(15, 23, 42, .28); stroke-width: 2; }

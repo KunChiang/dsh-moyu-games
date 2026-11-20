@@ -3,9 +3,9 @@
  *
  * 规则：
  * - 吊车带着与当前楼顶同宽的楼板左右移动，点击放下；
- * - 落点与楼顶的重叠部分保留，悬空部分掉下去；
- * - 重叠太少直接掉下去；连续歪向一侧会让 lean 增大，楼越晃越厉害，
- *   lean 超过上限就整体倒塌。
+ * - 楼板整块保留（悬空部分也留在楼上），但支撑太少会直接掉下去；
+ * - 连续歪向一侧会让 lean 增大，楼越晃越厉害，lean 超过上限就整体倒塌。
+ * - 相机只跟随顶部，底部楼层逐渐移出画面，画布高度不随楼层增长。
  * - 完全对齐算 perfect，不损失宽度并让晃动回落。
  */
 
@@ -57,9 +57,10 @@ export function resolveDrop(tower, center) {
   const overlapLeft = Math.max(top.x, left)
   const overlapRight = Math.min(top.x + top.width, right)
   const overlap = overlapRight - overlapLeft
-  const minimum = Math.max(16, width * 0.12)
+  // 整块保留，但至少要有一小部分压在楼顶上，否则支撑不住会掉下去。
+  const minimumSupport = width * 0.25
 
-  if (overlap < minimum) {
+  if (overlap < minimumSupport) {
     return {
       tower: { ...tower, status: 'over', reason: 'miss' },
       outcome: 'miss',
@@ -72,9 +73,10 @@ export function resolveDrop(tower, center) {
   const normalized = offset / width
   const perfect = Math.abs(offset) <= Math.min(STACK.perfectTolerance, width * 0.06)
 
+  // 不裁掉悬空部分：整块楼板都留在楼上。
   const block = perfect
     ? { x: top.x, width: top.width, level: tower.blocks.length }
-    : { x: overlapLeft, width: overlap, level: tower.blocks.length }
+    : { x: left, width, level: tower.blocks.length }
 
   let lean = tower.lean * 0.68 + normalized * 1.4
   if (perfect) lean = tower.lean * 0.45

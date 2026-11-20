@@ -29,21 +29,20 @@ test('完美对齐保留宽度并降低晃动', () => {
   assert.equal(result.tower.score, 1)
 })
 
-test('偏移时只保留重叠部分', () => {
+test('偏移时保留整块楼板（含悬空部分）', () => {
   const tower = createTower()
   const top = topBlock(tower)
   const result = resolveDrop(tower, top.x + top.width / 2 + 20)
   assert.equal(result.outcome, 'landed')
   const next = topBlock(result.tower)
-  assert.ok(next.width < top.width)
-  assert.ok(next.width > 0)
-  assert.ok(Math.abs(next.width - (top.width - 20)) < 0.001)
+  assert.equal(next.width, top.width)
+  assert.ok(next.x > top.x)
 })
 
-test('完全放歪会掉下去', () => {
+test('支撑太少会掉下去', () => {
   const tower = createTower()
   const top = topBlock(tower)
-  const result = resolveDrop(tower, top.x - 100)
+  const result = resolveDrop(tower, top.x - top.width * 0.4)
   assert.equal(result.outcome, 'miss')
   assert.equal(result.tower.status, 'over')
   assert.equal(result.tower.reason, 'miss')
